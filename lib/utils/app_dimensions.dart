@@ -1,0 +1,35 @@
+class AppDimensions {
+  static double kFontSize6 = 6;
+  static double kFontSize7 = 7;
+  static double kFontSize8 = 8;
+  static double kFontSize9 = 9;
+  static double kFontSize10 = 10;
+  static double kFontSize11 = 11;
+  static double kFontSize12 = 12;
+  static double kFontSize13 = 13;
+  static double kFontSize14 = 14;
+  static double kFontSize15 = 15;
+  static double kFontSize16 = 16;
+  static double kFontSize17 = 17;
+  static double kFontSize18 = 18;
+  static double kFontSize19 = 19;
+  static double kFontSize20 = 20;
+  static double kFontSize21 = 21;
+  static double kFontSize22 = 22;
+  static double kFontSize24 = 24;
+  static double kFontSize26 = 26;
+  static double kFontSize28 = 28;
+  static double kFontSize30 = 30;
+  static double kFontSize32 = 32;
+  static double kFontSize34 = 34;
+  static double kFontSize35 = 35;
+  static double kFontSize40 = 40;
+  static double kFontSize41 = 41;
+  static double kFontSize42 = 42;
+  static double kFontSize44 = 44;
+  static double kFontSize48 = 48;
+  static double kFontSize49 = 49;
+  static double kFontSize50 = 50;
+  static double kFontSize54 = 54;
+  static double kFontSize77 = 77;
+}
