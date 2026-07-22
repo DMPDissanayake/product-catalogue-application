@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:product_catalogue_application/features/dashbord/bottom_bar_view.dart';
 
 class Routes {
-  static const String kMaintenanceView = "kMaintenanceView";
-  //static const String kUpdateView = "kUpdateView";
+  static const String kDashboardView = "kDashboardView";
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
-      // case Routes.kSplashView:
-      //   return PageTransition(
-      //       child: SplashView(), type: PageTransitionType.fade);
-
-      // case Routes.kMaintenanceView:
-      //   return PageTransition(
-      //       child: MaintenanceView(), type: PageTransitionType.fade);
+      case Routes.kDashboardView:
+        return PageTransition(
+          child: DashboardView(),
+          type: PageTransitionType.fade,
+        );
 
       default:
         return MaterialPageRoute(
