@@ -6,9 +6,7 @@ import 'package:product_catalogue_application/utils/app_colors.dart';
 import 'package:product_catalogue_application/utils/app_dimensions.dart';
 
 class ProductFravoriteView extends StatefulWidget {
-  final Function(int, {dynamic data}) onChangeTab;
-  final dynamic data;
-  const ProductFravoriteView({super.key, required this.onChangeTab, this.data});
+  const ProductFravoriteView({super.key});
 
   @override
   State<ProductFravoriteView> createState() => _ProductFravoriteViewState();
@@ -20,7 +18,7 @@ class _ProductFravoriteViewState extends State<ProductFravoriteView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.initColors().nonChangeWhite,
       body: Container(
         height: double.infinity,
         width: double.infinity,

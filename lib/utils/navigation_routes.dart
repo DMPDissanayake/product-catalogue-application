@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:product_catalogue_application/features/dashbord/bottom_bar_view.dart';
+import 'package:product_catalogue_application/features/products/presentation/view/product_fravorite_view.dart';
+import 'package:product_catalogue_application/features/products/presentation/view/product_list_view.dart';
 
 class Routes {
-  static const String kDashboardView = "kDashboardView";
+  static const String kProductView = "kProductView";
+  static const String kProductFravoriteView = "kProductFravoriteView";
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
-      case Routes.kDashboardView:
+      case Routes.kProductView:
         return PageTransition(
-          child: DashboardView(),
+          child: ProductView(),
+          type: PageTransitionType.fade,
+        );
+      case Routes.kProductFravoriteView:
+        return PageTransition(
+          child: const ProductFravoriteView(),
           type: PageTransitionType.fade,
         );
 

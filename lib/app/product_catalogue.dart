@@ -16,7 +16,7 @@ class ProductCatalogue extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: AppConstants.appName,
-        initialRoute: Routes.kDashboardView,
+        initialRoute: Routes.kProductView,
         onGenerateRoute: Routes.generateRoute,
         theme: ThemeData(
           fontFamily: 'AvenirArabic',
