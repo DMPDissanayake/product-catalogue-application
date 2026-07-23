@@ -12,6 +12,10 @@ class AppColors {
     required this.bottomNavigationBackgroundColor,
     required this.appBGColor,
     required this.blackTextColor,
+    required this.tabBarColor,
+    required this.greyColor,
+    required this.greenColor,
+    required this.likeColoe,
   });
 
   Color primaryColor;
@@ -20,6 +24,10 @@ class AppColors {
   Color bottomNavigationBackgroundColor;
   LinearGradient appBGColor;
   Color blackTextColor;
+  LinearGradient tabBarColor;
+  Color greyColor;
+  Color greenColor;
+  Color likeColoe;
 
   static AppColors initColors() {
     if (_currentTheme == ThemeType.LIGHT) {
@@ -49,6 +57,14 @@ class AppColors {
         ],
       ),
       blackTextColor: const Color(0xFF0F0F0F),
+      tabBarColor: const LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [Color(0xFFFFFFFF), Color(0xFFFFFCF2), Color(0xFFFFF4D6)],
+      ),
+      greyColor: Colors.grey,
+      greenColor: Colors.green,
+      likeColoe: const Color(0xFFff00dd),
     );
   }
 
@@ -57,6 +73,7 @@ class AppColors {
       primaryColor: const Color(0xFFFFB400),
       nonChangeWhite: Colors.white,
       nonChangeBlack: Colors.black,
+      greyColor: Colors.grey,
       bottomNavigationBackgroundColor: Colors.white,
       appBGColor: LinearGradient(
         begin: Alignment.topCenter,
@@ -67,6 +84,13 @@ class AppColors {
         ],
       ),
       blackTextColor: const Color(0xFF0F0F0F),
+      tabBarColor: const LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [Color(0xFFFFFFFF), Color(0xFFFFFCF2), Color(0xFFFFF4D6)],
+      ),
+      greenColor: Colors.lightGreenAccent,
+      likeColoe: const Color(0xFFff00dd),
     );
   }
 }
