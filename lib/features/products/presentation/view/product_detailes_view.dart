@@ -2,7 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:product_catalogue_application/features/products/data/models/request/product_data_request_model.dart';
+import 'package:product_catalogue_application/features/products/domain/entities/product.dart';
+import 'package:product_catalogue_application/features/products/domain/entities/product_detail.dart';
 import 'package:product_catalogue_application/features/products/presentation/bloc/product_bloc.dart';
+import 'package:product_catalogue_application/features/products/presentation/bloc/product_event.dart';
+import 'package:product_catalogue_application/features/products/presentation/bloc/product_state.dart';
+import 'package:product_catalogue_application/features/products/presentation/cubit/favorite_cubit.dart';
+import 'package:product_catalogue_application/features/products/presentation/cubit/favorite_state.dart';
 import 'package:product_catalogue_application/features/products/presentation/widgets/Product_app_button.dart';
 import 'package:product_catalogue_application/features/products/presentation/widgets/catogary_laber_card.dart';
 import 'package:product_catalogue_application/features/products/presentation/widgets/product_app_bar.dart';
@@ -11,7 +18,7 @@ import 'package:product_catalogue_application/utils/app_dimensions.dart';
 import 'package:product_catalogue_application/utils/app_images.dart';
 
 class ProductDitailesViewArgs {
-  final int productId;
+  final String productId;
   ProductDitailesViewArgs({required this.productId});
 }
 
@@ -24,9 +31,26 @@ class ProductDetailesView extends StatefulWidget {
 }
 
 class _ProductDetailesViewState extends State<ProductDetailesView> {
-  final ProductBloc _bloc = ProductBloc();
+  late final ProductBloc _bloc;
+  late final FavoriteCubit _favoriteCubit;
+
   bool _isDescriptionExpanded = false;
-  bool _isFavourite = false;
+
+  bool _isLoading = false;
+  ProductDetail? _productDetail;
+  String? _errorMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    _bloc = context.read<ProductBloc>();
+    _favoriteCubit = context.read<FavoriteCubit>();
+    _bloc.add(
+      FetchProductDetailEvent(
+        request: ProductDataRequestModel(productId: widget.args.productId),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,12 +62,48 @@ class _ProductDetailesViewState extends State<ProductDetailesView> {
         width: double.infinity,
         decoration: BoxDecoration(gradient: AppColors.initColors().appBGColor),
         child: SafeArea(
-          child: BlocProvider.value(
-            value: _bloc,
-            child: BlocListener<ProductBloc, ProductState>(
-              listener: (_, state) {},
-              child: Stack(
-                children: [
+          child: BlocListener<ProductBloc, ProductState>(
+            listener: (_, state) {
+              if (state is ProductLoadingState) {
+                setState(() {
+                  _isLoading = true;
+                  _errorMessage = null;
+                });
+              } else if (state is ProductDetailLoadedState) {
+                setState(() {
+                  _isLoading = false;
+                  _productDetail = state.productDetail;
+                });
+              } else if (state is ProductErrorState) {
+                setState(() {
+                  _isLoading = false;
+                  _errorMessage = state.message;
+                });
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.message),
+                    backgroundColor: AppColors.initColors().errorColor,
+                  ),
+                );
+              }
+            },
+            child: Stack(
+              children: [
+                if (_errorMessage != null && _productDetail == null)
+                  Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(16.w),
+                      child: Text(
+                        _errorMessage!,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: AppColors.initColors().errorColor,
+                          fontSize: AppDimensions.kFontSize16,
+                        ),
+                      ),
+                    ),
+                  ),
+                if (_productDetail != null)
                   SingleChildScrollView(
                     child: Column(
                       children: [
@@ -52,7 +112,7 @@ class _ProductDetailesViewState extends State<ProductDetailesView> {
                             bottom: Radius.circular(36.r),
                           ),
                           child: Image.network(
-                            'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500',
+                            _productDetail?.imageUrl ?? '',
                             height: 400.h,
                             width: double.infinity,
                             fit: BoxFit.cover,
@@ -77,7 +137,10 @@ class _ProductDetailesViewState extends State<ProductDetailesView> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              CatogaryLaberCard(catogaryName: 'Electronics'),
+                              CatogaryLaberCard(
+                                catogaryName:
+                                    _productDetail?.category ?? 'General',
+                              ),
                               Row(
                                 children: [
                                   SvgPicture.asset(
@@ -91,7 +154,8 @@ class _ProductDetailesViewState extends State<ProductDetailesView> {
                                   ),
                                   SizedBox(width: 8.w),
                                   Text(
-                                    '4.8',
+                                    _productDetail?.rating.toStringAsFixed(2) ??
+                                        '',
                                     style: TextStyle(
                                       fontWeight: FontWeight.w600,
                                       fontSize: AppDimensions.kFontSize12,
@@ -114,7 +178,7 @@ class _ProductDetailesViewState extends State<ProductDetailesView> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Aurora Pro Wireless Noise-Cancelling Headphones',
+                                _productDetail?.title ?? '',
                                 maxLines: 3,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
@@ -129,8 +193,8 @@ class _ProductDetailesViewState extends State<ProductDetailesView> {
                               ),
                               SizedBox(height: 16.h),
                               Text(
-                                '\$99.99',
-                                maxLines: 3,
+                                '\$ ${_productDetail?.price.toStringAsFixed(2) ?? '0.00'}',
+                                maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
@@ -178,7 +242,7 @@ class _ProductDetailesViewState extends State<ProductDetailesView> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Immerse yourself in studio-grade sound with adaptive active noise cancellation that adjusts to your environment in real time. The plush memory-foam ear cushions and lightweight frame make marathon listening sessions effortless. Enjoy up to 40 hours of battery life on a single charge, with a quick 10-minute top-up delivering five extra hours. Seamless multipoint pairing keeps you connected to your phone and laptop at once. Immerse yourself in studio-grade sound with adaptive active noise cancellation that adjusts to your environment in real time. The plush memory-foam ear cushions and lightweight frame make marathon listening sessions effortless. Enjoy up to 40 hours of battery life on a single charge, with a quick 10-minute top-up delivering five extra hours. Seamless multipoint pairing keeps you connected to your phone and laptop at once.',
+                                    _productDetail?.description ?? '',
                                     maxLines: _isDescriptionExpanded ? null : 5,
                                     overflow: _isDescriptionExpanded
                                         ? null
@@ -221,44 +285,72 @@ class _ProductDetailesViewState extends State<ProductDetailesView> {
                       ],
                     ),
                   ),
+                if (_productDetail != null)
                   Positioned(
                     bottom: 16.h,
                     left: 16.w,
                     right: 16.w,
-                    child: ProductAppButton(
-                      onTapButton: () {
-                        setState(() {
-                          _isFavourite = !_isFavourite;
-                        });
-                      },
-                      buttonText: _isFavourite
-                          ? 'Remove from Favorites'
-                          : 'Add to Favorites',
-                      textColor: _isFavourite
-                          ? AppColors.initColors().nonChangeBlack
-                          : AppColors.initColors().nonChangeWhite,
-                      borderColor: _isFavourite
-                          ? AppColors.initColors().nonChangeBlack
-                          : Colors.transparent,
-                      buttonColor: _isFavourite
-                          ? AppColors.initColors().nonChangeWhite
-                          : AppColors.initColors().primaryColor,
-                      prefixIcon: SvgPicture.asset(
-                        _isFavourite
-                            ? AppImages.svgFavoriteLike
-                            : AppImages.svgFavorite,
-                        height: 22.h,
-                        colorFilter: ColorFilter.mode(
-                          _isFavourite
-                              ? AppColors.initColors().primaryColor
+                    child: BlocBuilder<FavoriteCubit, FavoriteState>(
+                      builder: (context, favState) {
+                        final isFav = _favoriteCubit.isFavorite(
+                          widget.args.productId,
+                        );
+                        return ProductAppButton(
+                          onTapButton: () {
+                            if (_productDetail != null) {
+                              final product = Product(
+                                id: _productDetail!.id,
+                                title: _productDetail!.title,
+                                price: _productDetail!.price,
+                                description: _productDetail!.description,
+                                category: _productDetail!.category,
+                                imageUrl: _productDetail!.imageUrl,
+                                rating: _productDetail!.rating,
+                                isFavorite: isFav,
+                              );
+                              _favoriteCubit.toggleFavorite(product);
+                            }
+                          },
+                          buttonText: isFav
+                              ? 'Remove from Favorites'
+                              : 'Add to Favorites',
+                          textColor: isFav
+                              ? AppColors.initColors().nonChangeBlack
                               : AppColors.initColors().nonChangeWhite,
-                          BlendMode.srcIn,
-                        ),
+                          borderColor: isFav
+                              ? AppColors.initColors().nonChangeBlack
+                              : Colors.transparent,
+                          buttonColor: isFav
+                              ? AppColors.initColors().nonChangeWhite
+                              : AppColors.initColors().primaryColor,
+                          prefixIcon: SvgPicture.asset(
+                            isFav
+                                ? AppImages.svgFavoriteLike
+                                : AppImages.svgFavorite,
+                            height: 22.h,
+                            colorFilter: ColorFilter.mode(
+                              isFav
+                                  ? AppColors.initColors().primaryColor
+                                  : AppColors.initColors().nonChangeWhite,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                if (_isLoading)
+                  Container(
+                    color: AppColors.initColors().nonChangeWhite.withOpacity(
+                      0.5,
+                    ), // Background එක පොඩ්ඩක් Blur/Dim වෙන්න
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.initColors().primaryColor,
                       ),
                     ),
                   ),
-                ],
-              ),
+              ],
             ),
           ),
         ),

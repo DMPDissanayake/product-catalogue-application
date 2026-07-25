@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:product_catalogue_application/features/products/domain/entities/product.dart';
 import 'package:product_catalogue_application/features/products/presentation/widgets/catogary_laber_card.dart';
 import 'package:product_catalogue_application/utils/app_colors.dart';
 import 'package:product_catalogue_application/utils/app_dimensions.dart';
 
 class ProductCard extends StatefulWidget {
-  final double price;
+  final Product data;
+  final bool isFavorite;
   final VoidCallback onTap;
-  const ProductCard({super.key, required this.price, required this.onTap});
+  final VoidCallback onTapFavorite;
+  const ProductCard({
+    super.key,
+    required this.data,
+    required this.onTap,
+    required this.onTapFavorite,
+    required this.isFavorite,
+  });
 
   @override
   State<ProductCard> createState() => _ProductCardState();
@@ -15,6 +24,22 @@ class ProductCard extends StatefulWidget {
 
 class _ProductCardState extends State<ProductCard> {
   bool isFavorite = false;
+
+  @override
+  void initState() {
+    super.initState();
+    isFavorite = widget.isFavorite;
+  }
+
+  @override
+  void didUpdateWidget(covariant ProductCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.isFavorite != widget.isFavorite) {
+      setState(() {
+        isFavorite = widget.isFavorite;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +71,7 @@ class _ProductCardState extends State<ProductCard> {
                     width: double.infinity,
                     color: AppColors.initColors().greyColor,
                     child: Image.network(
-                      'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500',
+                      widget.data.imageUrl,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) => Icon(
                         Icons.image_not_supported_outlined,
@@ -64,6 +89,7 @@ class _ProductCardState extends State<ProductCard> {
                       setState(() {
                         isFavorite = !isFavorite;
                       });
+                      widget.onTapFavorite();
                     },
                     borderRadius: BorderRadius.circular(100.r),
                     child: Container(
@@ -100,10 +126,10 @@ class _ProductCardState extends State<ProductCard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CatogaryLaberCard(catogaryName: 'Electronics'),
+                  CatogaryLaberCard(catogaryName: widget.data.category),
                   SizedBox(height: 8.h),
                   Text(
-                    'Aura Wireless Noise-Cancelling Headphones',
+                    widget.data.title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -116,7 +142,7 @@ class _ProductCardState extends State<ProductCard> {
                   ),
                   SizedBox(height: 8.h),
                   Text(
-                    '\$${widget.price.toStringAsFixed(2)}',
+                    '\$${widget.data.price.toStringAsFixed(2)}',
                     style: TextStyle(
                       fontSize: AppDimensions.kFontSize16,
                       fontWeight: FontWeight.w800,

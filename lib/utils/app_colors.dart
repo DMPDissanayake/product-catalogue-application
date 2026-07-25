@@ -16,6 +16,7 @@ class AppColors {
     required this.greyColor,
     required this.greenColor,
     required this.likeColoe,
+    required this.errorColor,
   });
 
   Color primaryColor;
@@ -28,6 +29,7 @@ class AppColors {
   Color greyColor;
   Color greenColor;
   Color likeColoe;
+  Color errorColor;
 
   static AppColors initColors() {
     if (_currentTheme == ThemeType.LIGHT) {
@@ -47,7 +49,6 @@ class AppColors {
       nonChangeWhite: Colors.white,
       nonChangeBlack: Colors.black,
       bottomNavigationBackgroundColor: Colors.white,
-
       appBGColor: LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
@@ -65,6 +66,7 @@ class AppColors {
       greyColor: Colors.grey,
       greenColor: Colors.green,
       likeColoe: const Color(0xFFff00dd),
+      errorColor: Colors.red,
     );
   }
 
@@ -91,6 +93,7 @@ class AppColors {
       ),
       greenColor: Colors.lightGreenAccent,
       likeColoe: const Color(0xFFff00dd),
+      errorColor: Colors.red,
     );
   }
 }

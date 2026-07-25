@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:product_catalogue_application/features/products/domain/entities/product.dart';
 import 'package:product_catalogue_application/features/products/presentation/widgets/catogary_laber_card.dart';
 import 'package:product_catalogue_application/utils/app_colors.dart';
 import 'package:product_catalogue_application/utils/app_dimensions.dart';
 import 'package:product_catalogue_application/utils/app_images.dart';
 
 class ProductFavoriteItemCard extends StatelessWidget {
+  final Product data;
   final VoidCallback onTapFavorite;
   final VoidCallback onTapCard;
   const ProductFavoriteItemCard({
     super.key,
     required this.onTapFavorite,
     required this.onTapCard,
+    required this.data,
   });
 
   @override
@@ -45,7 +48,7 @@ class ProductFavoriteItemCard extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(12.r),
                 child: Image.network(
-                  'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500',
+                  data.imageUrl,
                   width: 80.h,
                   height: 80.h,
                   fit: BoxFit.cover,
@@ -70,10 +73,10 @@ class ProductFavoriteItemCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CatogaryLaberCard(catogaryName: 'Electronics'),
+                    CatogaryLaberCard(catogaryName: data.category),
                     SizedBox(height: 4.h),
                     Text(
-                      'Aura Wireless Noise-Cancelling Headphones',
+                      data.title,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -87,7 +90,7 @@ class ProductFavoriteItemCard extends StatelessWidget {
 
                     SizedBox(height: 8.h),
                     Text(
-                      "\$199.99",
+                      '\$${data.price.toStringAsFixed(2)}',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: AppDimensions.kFontSize16,
