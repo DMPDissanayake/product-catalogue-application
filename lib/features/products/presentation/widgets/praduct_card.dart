@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:product_catalogue_application/core/theme/app_colors.dart';
 import 'package:product_catalogue_application/features/products/domain/entities/product.dart';
 import 'package:product_catalogue_application/features/products/presentation/widgets/catogary_laber_card.dart';
-import 'package:product_catalogue_application/utils/app_colors.dart';
 import 'package:product_catalogue_application/utils/app_dimensions.dart';
 
 class ProductCard extends StatefulWidget {
@@ -47,7 +47,7 @@ class _ProductCardState extends State<ProductCard> {
       onTap: widget.onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.initColors().nonChangeWhite,
+          color: AppColors.initColors().productCardColor,
           borderRadius: BorderRadius.circular(20.r),
           boxShadow: const [
             BoxShadow(
@@ -146,7 +146,7 @@ class _ProductCardState extends State<ProductCard> {
                     style: TextStyle(
                       fontSize: AppDimensions.kFontSize16,
                       fontWeight: FontWeight.w800,
-                      color: AppColors.initColors().primaryColor,
+                      color: AppColors.initColors().greenColor,
                     ),
                   ),
                 ],

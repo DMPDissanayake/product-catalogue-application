@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:product_catalogue_application/utils/app_colors.dart';
+import 'package:product_catalogue_application/core/theme/app_colors.dart';
+import 'package:product_catalogue_application/core/theme/cubit/theme_cubit.dart';
 import 'package:product_catalogue_application/utils/app_images.dart';
+import 'package:product_catalogue_application/utils/enums.dart';
 
-class DarkLightButton extends StatefulWidget {
+class DarkLightButton extends StatelessWidget {
   final VoidCallback onPress;
   const DarkLightButton({super.key, required this.onPress});
 
   @override
-  State<DarkLightButton> createState() => _DarkLightButtonState();
-}
-
-class _DarkLightButtonState extends State<DarkLightButton> {
-  @override
   Widget build(BuildContext context) {
+    final currentTheme = context.watch<ThemeCubit>().state;
+    final isDark = currentTheme == ThemeType.DARK;
+
     return InkWell(
-      onTap: widget.onPress,
+      onTap: onPress,
+      borderRadius: BorderRadius.circular(100.r),
       child: Container(
         height: 50.h,
         width: 50.h,
@@ -36,13 +38,23 @@ class _DarkLightButtonState extends State<DarkLightButton> {
           ],
         ),
         child: Center(
-          child: SvgPicture.asset(
-            AppImages.svgDarkmode,
-            height: 20.h,
-            width: 20.h,
-            colorFilter: ColorFilter.mode(
-              AppColors.initColors().primaryColor,
-              BlendMode.srcIn,
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            transitionBuilder: (child, animation) {
+              return RotationTransition(
+                turns: animation,
+                child: FadeTransition(opacity: animation, child: child),
+              );
+            },
+            child: SvgPicture.asset(
+              isDark ? AppImages.svgLight : AppImages.svgDarkmode,
+              key: ValueKey<bool>(isDark),
+              height: 20.h,
+              width: 20.h,
+              colorFilter: ColorFilter.mode(
+                AppColors.initColors().primaryColor,
+                BlendMode.srcIn,
+              ),
             ),
           ),
         ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:product_catalogue_application/utils/app_colors.dart';
+import 'package:product_catalogue_application/core/theme/app_colors.dart';
 import 'package:product_catalogue_application/utils/app_dimensions.dart';
 
 class ProductAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -43,7 +43,7 @@ class ProductAppBar extends StatelessWidget implements PreferredSizeWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     if (isGoBackEnabled)
-                      LoginBackIcon()
+                      BackIcon()
                     else
                       Container(
                         width: 48.w,
@@ -113,8 +113,8 @@ class ProductAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 }
 
-class LoginBackIcon extends StatelessWidget {
-  const LoginBackIcon({super.key});
+class BackIcon extends StatelessWidget {
+  const BackIcon({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -128,17 +128,17 @@ class LoginBackIcon extends StatelessWidget {
         height: 50.h,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(100.r),
-          color: AppColors.initColors().nonChangeBlack.withOpacity(0.1),
+          color: AppColors.initColors().backIconColor.withOpacity(0.1),
           border: Border.all(
             width: 1,
-            color: AppColors.initColors().nonChangeBlack.withOpacity(0.01),
+            color: AppColors.initColors().backIconColor.withOpacity(0.01),
           ),
         ),
         child: Directionality(
           textDirection: TextDirection.ltr,
           child: Icon(
             Icons.arrow_back_rounded,
-            color: AppColors.initColors().nonChangeBlack,
+            color: AppColors.initColors().backIconColor,
             size: 24.sp,
           ),
         ),

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:product_catalogue_application/utils/app_colors.dart';
+import 'package:product_catalogue_application/core/theme/app_colors.dart';
 import 'package:product_catalogue_application/utils/app_dimensions.dart';
 import 'package:product_catalogue_application/utils/app_images.dart';
 
@@ -49,7 +49,7 @@ class _SearchTextFieldState extends State<SearchTextField> {
     return Container(
       height: 48.h,
       decoration: BoxDecoration(
-        color: AppColors.initColors().nonChangeWhite,
+        color: AppColors.initColors().searchColor,
         borderRadius: BorderRadius.circular(8.r),
       ),
       child: TextField(

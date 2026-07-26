@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:product_catalogue_application/core/theme/cubit/theme_cubit.dart';
 import 'package:product_catalogue_application/features/products/data/models/request/product_list_request_model.dart';
 import 'package:product_catalogue_application/features/products/data/models/request/product_search_request_model.dart';
 import 'package:product_catalogue_application/features/products/domain/entities/product.dart';
@@ -10,12 +11,13 @@ import 'package:product_catalogue_application/features/products/presentation/blo
 import 'package:product_catalogue_application/features/products/presentation/bloc/product_state.dart';
 import 'package:product_catalogue_application/features/products/presentation/cubit/favorite_cubit.dart';
 import 'package:product_catalogue_application/features/products/presentation/cubit/favorite_state.dart';
+import 'package:product_catalogue_application/features/products/presentation/widgets/empty_state_widget.dart';
 import 'package:product_catalogue_application/features/products/presentation/widgets/dark_light_button.dart';
 import 'package:product_catalogue_application/features/products/presentation/widgets/product_card_shimmer_grid.dart';
 import 'package:product_catalogue_application/features/products/presentation/widgets/product_tab_bar_widget.dart';
 import 'package:product_catalogue_application/features/products/presentation/view/product_detailes_view.dart';
 import 'package:product_catalogue_application/features/products/presentation/widgets/search_text_field.dart';
-import 'package:product_catalogue_application/utils/app_colors.dart';
+import 'package:product_catalogue_application/core/theme/app_colors.dart';
 import 'package:product_catalogue_application/utils/app_images.dart';
 import 'package:product_catalogue_application/utils/navigation_routes.dart';
 import 'package:product_catalogue_application/features/products/presentation/widgets/product_favoeite_button.dart';
@@ -32,6 +34,7 @@ class ProductView extends StatefulWidget {
 class _ProductViewState extends State<ProductView> {
   late final ProductBloc _bloc;
   late final FavoriteCubit _favoriteCubit;
+  late final ThemeCubit _themeCubit;
 
   int _selectedIndex = 0;
 
@@ -62,6 +65,7 @@ class _ProductViewState extends State<ProductView> {
     super.initState();
     _bloc = context.read<ProductBloc>();
     _favoriteCubit = context.read<FavoriteCubit>();
+    _themeCubit = context.read<ThemeCubit>();
     _fetchProducts();
     _scrollController.addListener(_onScroll);
   }
@@ -131,13 +135,7 @@ class _ProductViewState extends State<ProductView> {
           return ProductFavoriteButton(
             favoriteCount: count,
             onClick: () {
-              Navigator.pushNamed(context, Routes.kProductFravoriteView).then((
-                e,
-              ) {
-                if (e == true) {
-                  _fetchProducts();
-                }
-              });
+              Navigator.pushNamed(context, Routes.kProductFravoriteView);
             },
           );
         },
@@ -223,7 +221,11 @@ class _ProductViewState extends State<ProductView> {
                           ),
                         ],
                       ),
-                      DarkLightButton(onPress: () {}),
+                      DarkLightButton(
+                        onPress: () {
+                          _themeCubit.toggleTheme();
+                        },
+                      ),
                     ],
                   ),
                 ),
@@ -268,14 +270,12 @@ class _ProductViewState extends State<ProductView> {
                 Expanded(
                   child: _isLoading
                       ? const ProductCardShimmerGrid()
-                      : _errorMessage != null && _products.isEmpty
-                      ? Center(
-                          child: Text(
-                            _errorMessage!,
-                            style: TextStyle(
-                              color: AppColors.initColors().errorColor,
-                            ),
-                          ),
+                      : !_isLoading && _products.isEmpty
+                      ? EmptyStateWidget(
+                          title: _errorMessage ?? "No Products Found",
+                          message: _errorMessage != null
+                              ? "There was an issue fetching products. Please try again."
+                              : "No products match your current search or filter.",
                         )
                       : Column(
                           children: [

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:product_catalogue_application/utils/app_colors.dart';
+import 'package:product_catalogue_application/core/theme/app_colors.dart';
 
 class ProductAppButton extends StatefulWidget {
   final String buttonText;

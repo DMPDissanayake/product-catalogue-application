@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:product_catalogue_application/core/theme/app_colors.dart';
 import 'package:product_catalogue_application/features/products/domain/entities/product.dart';
+import 'package:product_catalogue_application/features/products/presentation/widgets/empty_state_widget.dart';
 import 'package:product_catalogue_application/features/products/presentation/cubit/favorite_cubit.dart';
 import 'package:product_catalogue_application/features/products/presentation/cubit/favorite_state.dart';
 import 'package:product_catalogue_application/features/products/presentation/view/product_detailes_view.dart';
@@ -10,7 +12,6 @@ import 'package:product_catalogue_application/features/products/presentation/wid
 import 'package:product_catalogue_application/features/products/presentation/widgets/product_favorite_item_card.dart';
 import 'package:product_catalogue_application/features/products/presentation/widgets/product_tab_bar_widget.dart';
 import 'package:product_catalogue_application/features/products/presentation/widgets/search_text_field.dart';
-import 'package:product_catalogue_application/utils/app_colors.dart';
 import 'package:product_catalogue_application/utils/app_dimensions.dart';
 import 'package:product_catalogue_application/utils/app_images.dart';
 import 'package:product_catalogue_application/utils/navigation_routes.dart';
@@ -84,7 +85,7 @@ class _ProductFravoriteViewState extends State<ProductFravoriteView> {
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
                 child: Row(
                   children: [
-                    const LoginBackIcon(),
+                    const BackIcon(),
                     SizedBox(width: 24.w),
                     SvgPicture.asset(
                       AppImages.svgFavorite,
@@ -136,16 +137,25 @@ class _ProductFravoriteViewState extends State<ProductFravoriteView> {
                     if (state is FavoriteLoaded) {
                       allFavorites = state.favoriteProducts;
                     }
+
+                    if (allFavorites.isEmpty) {
+                      return const EmptyStateWidget(
+                        title: "Your Favorite List is Empty",
+                        message:
+                            "Add products to your favorites to see them here.",
+                      );
+                    }
+
                     final filteredProducts = _getFilteredProducts(allFavorites);
                     if (filteredProducts.isEmpty) {
-                      return Center(
-                        child: Text(
-                          "No favorite products found",
-                          style: TextStyle(
-                            color: AppColors.initColors().blackTextColor,
-                            fontSize: AppDimensions.kFontSize14,
-                          ),
-                        ),
+                      final selectedCategory = _tabs[_selectedIndex];
+                      final message = selectedCategory == 'All'
+                          ? "No favorite products match your current search."
+                          : "You have no favorites in the '$selectedCategory' category.";
+                      return const EmptyStateWidget(
+                        title: "No Products Found",
+                        message:
+                            "No favorite products match your current search or filter.",
                       );
                     }
                     return ListView.builder(

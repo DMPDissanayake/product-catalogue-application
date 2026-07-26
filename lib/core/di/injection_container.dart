@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart'; // 1. get_it import කරන්න
+import 'package:product_catalogue_application/core/theme/cubit/theme_cubit.dart';
 import 'package:product_catalogue_application/features/products/presentation/cubit/favorite_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -43,6 +44,9 @@ Future<void> setupDependencies() async {
   //ProductBloc
   sl.registerFactory<ProductBloc>(() => ProductBloc(productRepository: sl()));
 
-  //Cubit
+  //Favorite Cubit
   sl.registerFactory(() => FavoriteCubit(repository: sl()));
+
+  // Theme Cubit
+  sl.registerFactory(() => ThemeCubit());
 }

@@ -14,7 +14,7 @@ import 'package:product_catalogue_application/features/products/presentation/wid
 import 'package:product_catalogue_application/features/products/presentation/widgets/catogary_laber_card.dart';
 import 'package:product_catalogue_application/features/products/presentation/widgets/product_app_bar.dart';
 import 'package:product_catalogue_application/features/products/presentation/widgets/product_detailes_view_shimmer.dart';
-import 'package:product_catalogue_application/utils/app_colors.dart';
+import 'package:product_catalogue_application/core/theme/app_colors.dart';
 import 'package:product_catalogue_application/utils/app_dimensions.dart';
 import 'package:product_catalogue_application/utils/app_images.dart';
 

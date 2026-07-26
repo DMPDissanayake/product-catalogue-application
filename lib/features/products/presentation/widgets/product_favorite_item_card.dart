@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:product_catalogue_application/core/theme/app_colors.dart';
 import 'package:product_catalogue_application/features/products/domain/entities/product.dart';
 import 'package:product_catalogue_application/features/products/presentation/widgets/catogary_laber_card.dart';
-import 'package:product_catalogue_application/utils/app_colors.dart';
 import 'package:product_catalogue_application/utils/app_dimensions.dart';
 import 'package:product_catalogue_application/utils/app_images.dart';
 
@@ -24,9 +24,9 @@ class ProductFavoriteItemCard extends StatelessWidget {
       onTap: onTapCard,
       child: Container(
         height: 120.h,
-        margin: EdgeInsets.only(bottom: 8.h, left: 12.w, right: 12.w),
+        margin: EdgeInsets.only(bottom: 8.h),
         decoration: BoxDecoration(
-          color: AppColors.initColors().nonChangeWhite.withOpacity(0.7),
+          color: AppColors.initColors().favoritCardColor,
           borderRadius: BorderRadius.circular(12.r),
           border: Border.all(
             width: 1,
@@ -43,7 +43,7 @@ class ProductFavoriteItemCard extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 12.w),
           child: Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(12.r),
@@ -66,7 +66,7 @@ class ProductFavoriteItemCard extends StatelessWidget {
                   },
                 ),
               ),
-              SizedBox(width: 12.w),
+              SizedBox(width: 6.w),
               Flexible(
                 fit: FlexFit.loose,
                 child: Column(
