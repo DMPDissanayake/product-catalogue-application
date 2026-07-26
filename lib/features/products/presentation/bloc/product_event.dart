@@ -10,7 +10,7 @@ abstract class ProductEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-/// Products List එක Load කිරීම (Category & Pagination සඳහා)
+/// Products List
 class FetchProductListEvent extends ProductEvent {
   final ProductListRequestModel request;
 
@@ -20,7 +20,7 @@ class FetchProductListEvent extends ProductEvent {
   List<Object?> get props => [request];
 }
 
-/// Product Search කිරීම
+/// Product Search
 class SearchProductsEvent extends ProductEvent {
   final ProductSearchRequestModel request;
 
@@ -30,7 +30,7 @@ class SearchProductsEvent extends ProductEvent {
   List<Object?> get props => [request];
 }
 
-/// Single Product Detail එක Load කිරීම
+/// Single Product Detail
 class FetchProductDetailEvent extends ProductEvent {
   final ProductDataRequestModel request;
 

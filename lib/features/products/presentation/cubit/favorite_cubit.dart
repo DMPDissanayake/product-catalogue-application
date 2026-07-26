@@ -8,7 +8,7 @@ class FavoriteCubit extends Cubit<FavoriteState> {
 
   FavoriteCubit({required this.repository}) : super(FavoriteInitial());
 
-  /// Favorite Products ටික Storage එකෙන් Load කිරීම
+  /// Favorite Products
   Future<void> loadFavorites() async {
     emit(FavoriteLoading());
     try {
@@ -19,19 +19,16 @@ class FavoriteCubit extends Cubit<FavoriteState> {
     }
   }
 
-  /// Toggle Favorite (Optimistic UI Update සමඟ)
+  /// Toggle Favorite
   Future<void> toggleFavorite(Product product) async {
     if (state is FavoriteLoaded) {
       final currentFavorites = List<Product>.from(
         (state as FavoriteLoaded).favoriteProducts,
       );
       final isExisting = currentFavorites.any((p) => p.id == product.id);
-
-      // 1. UI එකට Instant Update එකක් දෙනවා (Optimistic Update)
       if (isExisting) {
         currentFavorites.removeWhere((p) => p.id == product.id);
       } else {
-        // favorite list එකට එකතු කරද්දී `isFavorite = true` කරලා එකතු කරනවා
         final updatedProduct = Product(
           id: product.id,
           title: product.title,
@@ -44,20 +41,16 @@ class FavoriteCubit extends Cubit<FavoriteState> {
         );
         currentFavorites.add(updatedProduct);
       }
-
       emit(FavoriteLoaded(currentFavorites));
-
-      // 2. Storage/Backend එකේ Toggle කිරීම
       try {
         await repository.toggleFavorite(product);
       } catch (e) {
-        // Error එකක් ආවොත් Rollback කිරීම සඳහා පරණ Data Re-load කිරීම
         loadFavorites();
       }
     }
   }
 
-  /// Product එකක් Favorite ද නැද්ද යන්න check කිරීම
+  /// Product
   bool isFavorite(String productId) {
     if (state is FavoriteLoaded) {
       return (state as FavoriteLoaded).favoriteProducts.any(

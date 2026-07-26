@@ -44,7 +44,6 @@ class _ProductFravoriteViewState extends State<ProductFravoriteView> {
     _favoriteCubit = context.read<FavoriteCubit>();
   }
 
-  // 💡 Cubit එකෙන් එන favorites list එක Category & Search මත Filter කරන ක්‍රමය
   List<Product> _getFilteredProducts(List<Product> favorites) {
     final selectedCategory = _tabs[_selectedIndex];
     final searchQuery = _searchController.text.toLowerCase().trim();

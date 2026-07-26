@@ -11,6 +11,7 @@ import 'package:product_catalogue_application/features/products/presentation/blo
 import 'package:product_catalogue_application/features/products/presentation/cubit/favorite_cubit.dart';
 import 'package:product_catalogue_application/features/products/presentation/cubit/favorite_state.dart';
 import 'package:product_catalogue_application/features/products/presentation/widgets/dark_light_button.dart';
+import 'package:product_catalogue_application/features/products/presentation/widgets/product_card_shimmer_grid.dart';
 import 'package:product_catalogue_application/features/products/presentation/widgets/product_tab_bar_widget.dart';
 import 'package:product_catalogue_application/features/products/presentation/view/product_detailes_view.dart';
 import 'package:product_catalogue_application/features/products/presentation/widgets/search_text_field.dart';
@@ -38,7 +39,7 @@ class _ProductViewState extends State<ProductView> {
   final int _limit = 20;
 
   List<Product> _products = [];
-  bool _isLoading = false;
+  bool _isLoading = true;
   bool _isMoreLoading = false;
   bool _hasMoreData = true;
   String? _errorMessage;
@@ -66,6 +67,11 @@ class _ProductViewState extends State<ProductView> {
   }
 
   void _fetchProducts() {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+      _products.clear();
+    });
     _currentPage = 1;
     _hasMoreData = true;
     final selectedCategory = _tabs[_selectedIndex];
@@ -143,11 +149,13 @@ class _ProductViewState extends State<ProductView> {
         child: SafeArea(
           child: BlocListener<ProductBloc, ProductState>(
             listener: (_, state) {
-              if (state is ProductLoadingState && _currentPage == 1) {
-                setState(() {
-                  _isLoading = true;
-                  _errorMessage = null;
-                });
+              if (state is ProductLoadingState) {
+                if (_currentPage == 1) {
+                  setState(() {
+                    _isLoading = true;
+                    _errorMessage = null;
+                  });
+                }
               } else if (state is ProductListLoadedState) {
                 setState(() {
                   _isLoading = false;
@@ -156,8 +164,6 @@ class _ProductViewState extends State<ProductView> {
                   if (state.products.length < _limit) {
                     _hasMoreData = false;
                   }
-
-                  // First Page නම් Direct Assign, Pagination නම් Append කිරීම
                   if (_currentPage == 1) {
                     _products = List.from(state.products);
                   } else {
@@ -231,7 +237,7 @@ class _ProductViewState extends State<ProductView> {
                       if (query.trim().isEmpty) {
                         _fetchProducts();
                       } else {
-                        context.read<ProductBloc>().add(
+                        _bloc.add(
                           SearchProductsEvent(
                             request: ProductSearchRequestModel(query: query),
                           ),
@@ -248,6 +254,7 @@ class _ProductViewState extends State<ProductView> {
                     if (_selectedIndex != index) {
                       setState(() {
                         _selectedIndex = index;
+                        _isLoading = true;
                         _products.clear();
                       });
                       if (_scrollController.hasClients) {
@@ -260,11 +267,7 @@ class _ProductViewState extends State<ProductView> {
                 SizedBox(height: 16.h),
                 Expanded(
                   child: _isLoading
-                      ? Center(
-                          child: CircularProgressIndicator(
-                            color: AppColors.initColors().primaryColor,
-                          ),
-                        )
+                      ? const ProductCardShimmerGrid()
                       : _errorMessage != null && _products.isEmpty
                       ? Center(
                           child: Text(
@@ -321,7 +324,11 @@ class _ProductViewState extends State<ProductView> {
                                                   ProductDitailesViewArgs(
                                                     productId: product.id,
                                                   ),
-                                            );
+                                            ).then((e) {
+                                              if (e == true && e != null) {
+                                                _fetchProducts();
+                                              }
+                                            });
                                           },
                                           onTapFavorite: () {
                                             _favoriteCubit.toggleFavorite(

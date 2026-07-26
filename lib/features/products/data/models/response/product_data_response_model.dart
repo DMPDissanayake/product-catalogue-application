@@ -7,7 +7,6 @@ class ProductDataResponseModel {
 
   factory ProductDataResponseModel.fromJson(Map<String, dynamic> json) {
     return ProductDataResponseModel(
-      // 🟢 'output' හෝ 'data' කියන keys දෙකෙන්ම data එක ගන්න පුළුවන් විදිහට හැදුවා
       productData: ProductDetailModel.fromJson(
         json['output'] ?? json['data'] ?? json,
       ),

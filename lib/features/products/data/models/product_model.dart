@@ -25,7 +25,6 @@ class ProductModel extends Product {
     );
   }
 
-  /// 🟢 එකතු කළ නව Method එක: Domain Entity එක Model එකක් කරගැනීමට
   factory ProductModel.fromEntity(Product product) {
     return ProductModel(
       id: product.id,
@@ -61,8 +60,7 @@ class ProductModel extends Product {
       category: category,
       imageUrl: imageUrl,
       rating: rating,
-      isFavorite:
-          isFav ?? isFavorite, // `isFav` Pass නොකළොත් Model එකේ තියෙන අගයම ගනී
+      isFavorite: isFav ?? isFavorite,
     );
   }
 }

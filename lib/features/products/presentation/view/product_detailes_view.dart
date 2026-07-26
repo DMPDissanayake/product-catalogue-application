@@ -13,6 +13,7 @@ import 'package:product_catalogue_application/features/products/presentation/cub
 import 'package:product_catalogue_application/features/products/presentation/widgets/Product_app_button.dart';
 import 'package:product_catalogue_application/features/products/presentation/widgets/catogary_laber_card.dart';
 import 'package:product_catalogue_application/features/products/presentation/widgets/product_app_bar.dart';
+import 'package:product_catalogue_application/features/products/presentation/widgets/product_detailes_view_shimmer.dart';
 import 'package:product_catalogue_application/utils/app_colors.dart';
 import 'package:product_catalogue_application/utils/app_dimensions.dart';
 import 'package:product_catalogue_application/utils/app_images.dart';
@@ -55,7 +56,12 @@ class _ProductDetailesViewState extends State<ProductDetailesView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: ProductAppBar(title: 'Product Details'),
+      appBar: ProductAppBar(
+        title: 'Product Details',
+        onBackPressed: () {
+          Navigator.pop(context, true);
+        },
+      ),
       backgroundColor: AppColors.initColors().nonChangeWhite,
       body: Container(
         height: double.infinity,
@@ -339,17 +345,7 @@ class _ProductDetailesViewState extends State<ProductDetailesView> {
                       },
                     ),
                   ),
-                if (_isLoading)
-                  Container(
-                    color: AppColors.initColors().nonChangeWhite.withOpacity(
-                      0.5,
-                    ), // Background එක පොඩ්ඩක් Blur/Dim වෙන්න
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        color: AppColors.initColors().primaryColor,
-                      ),
-                    ),
-                  ),
+                if (_isLoading) ProductDetailesViewShimmer(),
               ],
             ),
           ),

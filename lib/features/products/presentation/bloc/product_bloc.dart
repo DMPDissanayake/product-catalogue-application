@@ -17,9 +17,15 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     FetchProductListEvent event,
     Emitter<ProductState> emit,
   ) async {
-    emit(ProductLoadingState());
+    if (event.request.page == 1) {
+      emit(ProductLoadingState());
+    }
     try {
       final products = await productRepository.getProductList(event.request);
+      if (event.request.page == 1) {
+        await Future.delayed(const Duration(milliseconds: 300));
+      }
+
       emit(ProductListLoadedState(products: products));
     } catch (e) {
       emit(ProductErrorState(message: e.toString()));

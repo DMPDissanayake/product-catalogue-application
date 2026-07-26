@@ -119,7 +119,9 @@ class LoginBackIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => Navigator.of(context).pop(),
+      onTap: () {
+        Navigator.pop(context, true);
+      },
       borderRadius: BorderRadius.circular(10.w),
       child: Container(
         width: 50.h,

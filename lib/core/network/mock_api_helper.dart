@@ -5,9 +5,7 @@ import 'mock_models.dart';
 class MockAPIHelper implements ApiHelper {
   @override
   Future<dynamic> post(String url, {required dynamic body}) async {
-    await Future.delayed(const Duration(seconds: 1));
-
-    // 💡 Body එකෙන් Product ID එක Extraction කරගැනීම
+    await Future.delayed(const Duration(seconds: 2));
     String? productId;
     if (body is Map) {
       productId = (body['product_id'] ?? body['productId'] ?? body['id'])
@@ -34,8 +32,6 @@ class MockAPIHelper implements ApiHelper {
     Map<String, dynamic>? queryParameters,
   }) async {
     await Future.delayed(const Duration(seconds: 2));
-
-    // 💡 Query Parameters වලින් Product ID එක Extraction කරගැනීම
     final productId =
         (queryParameters?['product_id'] ??
                 queryParameters?['productId'] ??
@@ -47,7 +43,6 @@ class MockAPIHelper implements ApiHelper {
     return MockResponse(data: decodedData);
   }
 
-  /// 🟢 Internal method: URL එක සහ Product ID එක අනුව අදාළ Mock JSON String එක සාදයි
   String _getResponse(String url, {String? productId}) {
     switch (url) {
       case 'product/list':
@@ -55,7 +50,6 @@ class MockAPIHelper implements ApiHelper {
       case 'product/search':
         return MockModels.productSearchResponse;
       case 'product/data':
-        // 🚀 ID එක pass වෙනවා, ID එකක් නැතිනම් default "1" එක ගනී
         return MockModels.productDataResponse(productId ?? "1");
       default:
         return '{"success": false, "message": "Endpoint Not Found"}';

@@ -24,10 +24,8 @@ class ProductRepositoryImpl implements ProductRepository {
   @override
   Future<List<Product>> getProductList(ProductListRequestModel request) async {
     try {
-      // Storage එකෙන් Favorite Products Objects අරගෙන IDs ටික extraction කරගන්නවා
       final favProducts = favouritesStorageService.getFavoriteProducts();
       final favoriteIds = favProducts.map((p) => p.id).toSet();
-
       final Map<String, dynamic> jsonMap = jsonDecode(
         MockModels.productListResponse,
       );
@@ -90,7 +88,6 @@ class ProductRepositoryImpl implements ProductRepository {
   @override
   Future<bool> toggleFavorite(Product product) async {
     try {
-      // Object එක පිටින්ම Storage Service එකට Pass කරයි
       await favouritesStorageService.toggleFavoriteProduct(product);
       return favouritesStorageService.isFavorite(product.id);
     } catch (e) {
@@ -101,7 +98,6 @@ class ProductRepositoryImpl implements ProductRepository {
   @override
   Future<List<Product>> getFavoriteProducts() async {
     try {
-      // 🚀 Network call එකක් යවන්නේ නැතිව DIRECT Storage එකෙන් Return කරයි!
       return favouritesStorageService.getFavoriteProducts();
     } catch (e) {
       rethrow;

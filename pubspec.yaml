@@ -30,6 +30,8 @@ dependencies:
   equatable: ^2.1.0
   shared_preferences: ^2.2.2
   get_it: ^9.2.1
+  shimmer_animation: ^2.2.2+1
+  shimmer: ^3.0.0
 
 dev_dependencies:
   flutter_test:
