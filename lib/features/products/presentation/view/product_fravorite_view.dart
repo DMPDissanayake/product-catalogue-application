@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:product_catalogue_application/core/theme/app_colors.dart';
 import 'package:product_catalogue_application/features/products/domain/entities/product.dart';
@@ -132,30 +133,42 @@ class _ProductFravoriteViewState extends State<ProductFravoriteView> {
                             : "You have no favorites in the '$selectedCategory' category.",
                       );
                     }
-                    return ListView.builder(
-                      itemCount: filteredProducts.length,
-                      padding: EdgeInsets.symmetric(horizontal: 16.w),
-                      itemBuilder: (context, index) {
-                        final product = filteredProducts[index];
-                        return Padding(
-                          padding: EdgeInsets.only(bottom: 12.h),
-                          child: ProductFavoriteItemCard(
-                            data: product,
-                            onTapCard: () {
-                              Navigator.pushNamed(
-                                context,
-                                Routes.kProductDetailesView,
-                                arguments: ProductDitailesViewArgs(
-                                  productId: product.id,
+                    return AnimationLimiter(
+                      child: ListView.builder(
+                        itemCount: filteredProducts.length,
+                        padding: EdgeInsets.symmetric(horizontal: 16.w),
+                        itemBuilder: (context, index) {
+                          final product = filteredProducts[index];
+                          return AnimationConfiguration.staggeredList(
+                            position: index,
+                            duration: const Duration(milliseconds: 375),
+                            child: SlideAnimation(
+                              verticalOffset: 50.0,
+                              curve: Curves.easeOutCubic,
+                              child: FadeInAnimation(
+                                child: Padding(
+                                  padding: EdgeInsets.only(bottom: 12.h),
+                                  child: ProductFavoriteItemCard(
+                                    data: product,
+                                    onTapCard: () {
+                                      Navigator.pushNamed(
+                                        context,
+                                        Routes.kProductDetailesView,
+                                        arguments: ProductDitailesViewArgs(
+                                          productId: product.id,
+                                        ),
+                                      );
+                                    },
+                                    onTapFavorite: () {
+                                      _favoriteCubit.toggleFavorite(product);
+                                    },
+                                  ),
                                 ),
-                              );
-                            },
-                            onTapFavorite: () {
-                              _favoriteCubit.toggleFavorite(product);
-                            },
-                          ),
-                        );
-                      },
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                     );
                   },
                 ),

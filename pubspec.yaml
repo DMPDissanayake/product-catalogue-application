@@ -33,6 +33,7 @@ dependencies:
   shimmer_animation: ^2.2.2+1
   shimmer: ^3.0.0
   lottie: ^3.3.3
+  flutter_staggered_animations: ^1.1.1
 
 dev_dependencies:
   flutter_test:

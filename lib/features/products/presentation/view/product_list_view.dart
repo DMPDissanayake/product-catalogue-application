@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:product_catalogue_application/core/theme/cubit/theme_cubit.dart';
 import 'package:product_catalogue_application/features/products/data/models/request/product_list_request_model.dart';
@@ -308,58 +309,76 @@ class _ProductViewState extends State<ProductView> {
                                 backgroundColor:
                                     AppColors.initColors().nonChangeWhite,
                                 onRefresh: () async => _fetchProducts(),
-                                child: GridView.builder(
-                                  physics:
-                                      const AlwaysScrollableScrollPhysics(),
-                                  controller: _scrollController,
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 16.w,
-                                  ).copyWith(bottom: 20.h),
-                                  itemCount: _products.length,
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 2,
-                                        crossAxisSpacing: 16.w,
-                                        mainAxisSpacing: 16.h,
-                                        childAspectRatio: 0.67,
-                                      ),
-                                  itemBuilder: (context, index) {
-                                    final product = _products[index];
+                                child: AnimationLimiter(
+                                  child: GridView.builder(
+                                    physics:
+                                        const AlwaysScrollableScrollPhysics(),
+                                    controller: _scrollController,
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 16.w,
+                                    ).copyWith(bottom: 20.h),
+                                    itemCount: _products.length,
+                                    gridDelegate:
+                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 2,
+                                          crossAxisSpacing: 16.w,
+                                          mainAxisSpacing: 16.h,
+                                          childAspectRatio: 0.67,
+                                        ),
+                                    itemBuilder: (context, index) {
+                                      final product = _products[index];
 
-                                    return BlocBuilder<
-                                      FavoriteCubit,
-                                      FavoriteState
-                                    >(
-                                      builder: (context, favState) {
-                                        final isFav = _favoriteCubit.isFavorite(
-                                          product.id,
-                                        );
+                                      return AnimationConfiguration.staggeredGrid(
+                                        position: index,
+                                        duration: const Duration(
+                                          milliseconds: 375,
+                                        ),
+                                        columnCount: 2,
+                                        child: ScaleAnimation(
+                                          scale: 0.85,
+                                          curve: Curves.easeOutCubic,
+                                          child: FadeInAnimation(
+                                            child:
+                                                BlocBuilder<
+                                                  FavoriteCubit,
+                                                  FavoriteState
+                                                >(
+                                                  builder: (context, favState) {
+                                                    final isFav = _favoriteCubit
+                                                        .isFavorite(product.id);
 
-                                        return ProductCard(
-                                          key: ValueKey(product.id),
-                                          data: product,
-                                          isFavorite: isFav,
-                                          onTap: () {
-                                            Navigator.pushNamed(
-                                              context,
-                                              Routes.kProductDetailesView,
-                                              arguments:
-                                                  ProductDitailesViewArgs(
-                                                    productId: product.id,
-                                                  ),
-                                            ).then((_) {
-                                              _fetchProducts();
-                                            });
-                                          },
-                                          onTapFavorite: () {
-                                            _favoriteCubit.toggleFavorite(
-                                              product,
-                                            );
-                                          },
-                                        );
-                                      },
-                                    );
-                                  },
+                                                    return ProductCard(
+                                                      key: ValueKey(product.id),
+                                                      data: product,
+                                                      isFavorite: isFav,
+                                                      onTap: () {
+                                                        Navigator.pushNamed(
+                                                          context,
+                                                          Routes
+                                                              .kProductDetailesView,
+                                                          arguments:
+                                                              ProductDitailesViewArgs(
+                                                                productId:
+                                                                    product.id,
+                                                              ),
+                                                        ).then((_) {
+                                                          _fetchProducts();
+                                                        });
+                                                      },
+                                                      onTapFavorite: () {
+                                                        _favoriteCubit
+                                                            .toggleFavorite(
+                                                              product,
+                                                            );
+                                                      },
+                                                    );
+                                                  },
+                                                ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
                                 ),
                               ),
                             ),

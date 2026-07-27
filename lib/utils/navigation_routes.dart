@@ -13,20 +13,32 @@ class Routes {
     switch (settings.name) {
       case Routes.kProductView:
         return PageTransition(
-          child: ProductView(),
+          settings: settings,
+          child: const ProductView(),
           type: PageTransitionType.fade,
+          duration: const Duration(milliseconds: 250),
         );
+
       case Routes.kProductFravoriteView:
         return PageTransition(
+          settings: settings,
           child: const ProductFravoriteView(),
-          type: PageTransitionType.fade,
+          type: PageTransitionType.bottomToTop,
+          duration: const Duration(milliseconds: 350),
+          reverseDuration: const Duration(milliseconds: 300),
+          curve: Curves.easeOutCubic,
         );
+
       case Routes.kProductDetailesView:
         return PageTransition(
+          settings: settings,
           child: ProductDetailesView(
             args: settings.arguments as ProductDitailesViewArgs,
           ),
-          type: PageTransitionType.fade,
+          type: PageTransitionType.rightToLeftWithFade,
+          duration: const Duration(milliseconds: 200),
+          reverseDuration: const Duration(milliseconds: 200),
+          curve: Curves.easeOut,
         );
 
       default:
