@@ -13,21 +13,23 @@ abstract class ProductEvent extends Equatable {
 /// Products List
 class FetchProductListEvent extends ProductEvent {
   final ProductListRequestModel request;
+  final int requestId;
 
-  const FetchProductListEvent({required this.request});
+  const FetchProductListEvent({required this.request, this.requestId = 0});
 
   @override
-  List<Object?> get props => [request];
+  List<Object?> get props => [request, requestId];
 }
 
 /// Product Search
 class SearchProductsEvent extends ProductEvent {
   final ProductSearchRequestModel request;
+  final int requestId;
 
-  const SearchProductsEvent({required this.request});
+  const SearchProductsEvent({required this.request, this.requestId = 0});
 
   @override
-  List<Object?> get props => [request];
+  List<Object?> get props => [request, requestId];
 }
 
 /// Single Product Detail

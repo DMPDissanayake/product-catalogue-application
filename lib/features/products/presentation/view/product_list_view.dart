@@ -41,6 +41,8 @@ class _ProductViewState extends State<ProductView> {
   int _currentPage = 1;
   final int _limit = 20;
 
+  int _requestId = 0;
+
   List<Product> _products = [];
   bool _isLoading = true;
   bool _isMoreLoading = false;
@@ -71,6 +73,7 @@ class _ProductViewState extends State<ProductView> {
   }
 
   void _fetchProducts() {
+    final requestId = ++_requestId;
     setState(() {
       _isLoading = true;
       _errorMessage = null;
@@ -81,6 +84,7 @@ class _ProductViewState extends State<ProductView> {
     final selectedCategory = _tabs[_selectedIndex];
     _bloc.add(
       FetchProductListEvent(
+        requestId: requestId,
         request: ProductListRequestModel(
           limit: _limit,
           page: _currentPage,
@@ -107,9 +111,37 @@ class _ProductViewState extends State<ProductView> {
     final selectedCategory = _tabs[_selectedIndex];
     _bloc.add(
       FetchProductListEvent(
+        requestId: _requestId,
         request: ProductListRequestModel(
           limit: _limit,
           page: _currentPage,
+          category: selectedCategory == 'All' ? null : selectedCategory,
+        ),
+      ),
+    );
+  }
+
+  void _search(String query) {
+    final trimmedQuery = query.trim();
+    final selectedCategory = _tabs[_selectedIndex];
+
+    if (trimmedQuery.isEmpty) {
+      _fetchProducts();
+      return;
+    }
+
+    final requestId = ++_requestId;
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+      _currentPage = 1;
+      _hasMoreData = false;
+    });
+    _bloc.add(
+      SearchProductsEvent(
+        requestId: requestId,
+        request: ProductSearchRequestModel(
+          query: trimmedQuery,
           category: selectedCategory == 'All' ? null : selectedCategory,
         ),
       ),
@@ -135,7 +167,11 @@ class _ProductViewState extends State<ProductView> {
           return ProductFavoriteButton(
             favoriteCount: count,
             onClick: () {
-              Navigator.pushNamed(context, Routes.kProductFravoriteView);
+              Navigator.pushNamed(context, Routes.kProductFravoriteView).then((
+                _,
+              ) {
+                _fetchProducts();
+              });
             },
           );
         },
@@ -155,6 +191,7 @@ class _ProductViewState extends State<ProductView> {
                   });
                 }
               } else if (state is ProductListLoadedState) {
+                if (state.requestId != _requestId) return;
                 setState(() {
                   _isLoading = false;
                   _isMoreLoading = false;
@@ -235,17 +272,7 @@ class _ProductViewState extends State<ProductView> {
                   child: SearchTextField(
                     controller: _searchController,
                     hintText: "Search products...",
-                    onSearch: (query) {
-                      if (query.trim().isEmpty) {
-                        _fetchProducts();
-                      } else {
-                        _bloc.add(
-                          SearchProductsEvent(
-                            request: ProductSearchRequestModel(query: query),
-                          ),
-                        );
-                      }
-                    },
+                    onSearch: (query) => _search(query),
                   ),
                 ),
                 SizedBox(height: 12.h),
@@ -254,15 +281,11 @@ class _ProductViewState extends State<ProductView> {
                   selectedIndex: _selectedIndex,
                   onTabSelected: (index) {
                     if (_selectedIndex != index) {
-                      setState(() {
-                        _selectedIndex = index;
-                        _isLoading = true;
-                        _products.clear();
-                      });
+                      setState(() => _selectedIndex = index);
                       if (_scrollController.hasClients) {
                         _scrollController.jumpTo(0);
                       }
-                      _fetchProducts();
+                      _search(_searchController.text);
                     }
                   },
                 ),
@@ -324,10 +347,8 @@ class _ProductViewState extends State<ProductView> {
                                                   ProductDitailesViewArgs(
                                                     productId: product.id,
                                                   ),
-                                            ).then((e) {
-                                              if (e == true && e != null) {
-                                                _fetchProducts();
-                                              }
+                                            ).then((_) {
+                                              _fetchProducts();
                                             });
                                           },
                                           onTapFavorite: () {

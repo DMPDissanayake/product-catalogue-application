@@ -1,5 +1,3 @@
-import 'package:product_catalogue_application/core/network/mock_api_helper.dart';
-
 import '../../../../core/network/api_helper.dart';
 import '../models/request/product_data_request_model.dart';
 import '../models/request/product_list_request_model.dart';

@@ -4,14 +4,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:product_catalogue_application/core/theme/app_colors.dart';
 import 'package:product_catalogue_application/features/products/domain/entities/product.dart';
+import 'package:product_catalogue_application/features/products/presentation/view/product_detailes_view.dart';
 import 'package:product_catalogue_application/features/products/presentation/widgets/empty_state_widget.dart';
 import 'package:product_catalogue_application/features/products/presentation/cubit/favorite_cubit.dart';
 import 'package:product_catalogue_application/features/products/presentation/cubit/favorite_state.dart';
-import 'package:product_catalogue_application/features/products/presentation/view/product_detailes_view.dart';
 import 'package:product_catalogue_application/features/products/presentation/widgets/product_app_bar.dart';
 import 'package:product_catalogue_application/features/products/presentation/widgets/product_favorite_item_card.dart';
 import 'package:product_catalogue_application/features/products/presentation/widgets/product_tab_bar_widget.dart';
-import 'package:product_catalogue_application/features/products/presentation/widgets/search_text_field.dart';
 import 'package:product_catalogue_application/utils/app_dimensions.dart';
 import 'package:product_catalogue_application/utils/app_images.dart';
 import 'package:product_catalogue_application/utils/navigation_routes.dart';
@@ -25,7 +24,6 @@ class ProductFravoriteView extends StatefulWidget {
 
 class _ProductFravoriteViewState extends State<ProductFravoriteView> {
   late final FavoriteCubit _favoriteCubit;
-  final TextEditingController _searchController = TextEditingController();
 
   int _selectedIndex = 0;
   static const List<String> _tabs = [
@@ -47,25 +45,14 @@ class _ProductFravoriteViewState extends State<ProductFravoriteView> {
 
   List<Product> _getFilteredProducts(List<Product> favorites) {
     final selectedCategory = _tabs[_selectedIndex];
-    final searchQuery = _searchController.text.toLowerCase().trim();
 
     return favorites.where((product) {
       final matchesCategory =
           selectedCategory == "All" ||
           (product.category?.toLowerCase() == selectedCategory.toLowerCase());
 
-      final matchesSearch =
-          searchQuery.isEmpty ||
-          product.title.toLowerCase().contains(searchQuery);
-
-      return matchesCategory && matchesSearch;
+      return matchesCategory;
     }).toList();
-  }
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
   }
 
   @override
@@ -111,17 +98,6 @@ class _ProductFravoriteViewState extends State<ProductFravoriteView> {
                 ),
               ),
               SizedBox(height: 16.h),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: SearchTextField(
-                  controller: _searchController,
-                  hintText: "Search my favorite products...",
-                  onSearch: (query) {
-                    setState(() {});
-                  },
-                ),
-              ),
-              SizedBox(height: 16.h),
               ProductTabBarWidget(
                 tabs: _tabs,
                 selectedIndex: _selectedIndex,
@@ -149,13 +125,11 @@ class _ProductFravoriteViewState extends State<ProductFravoriteView> {
                     final filteredProducts = _getFilteredProducts(allFavorites);
                     if (filteredProducts.isEmpty) {
                       final selectedCategory = _tabs[_selectedIndex];
-                      final message = selectedCategory == 'All'
-                          ? "No favorite products match your current search."
-                          : "You have no favorites in the '$selectedCategory' category.";
-                      return const EmptyStateWidget(
+                      return EmptyStateWidget(
                         title: "No Products Found",
-                        message:
-                            "No favorite products match your current search or filter.",
+                        message: selectedCategory == 'All'
+                            ? "You have no favorite products."
+                            : "You have no favorites in the '$selectedCategory' category.",
                       );
                     }
                     return ListView.builder(

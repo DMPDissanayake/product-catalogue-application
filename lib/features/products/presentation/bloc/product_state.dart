@@ -15,11 +15,12 @@ class ProductLoadingState extends ProductState {}
 
 class ProductListLoadedState extends ProductState {
   final List<Product> products;
+  final int requestId;
 
-  const ProductListLoadedState({required this.products});
+  const ProductListLoadedState({required this.products, this.requestId = 0});
 
   @override
-  List<Object?> get props => [products];
+  List<Object?> get props => [products, requestId];
 }
 
 class ProductDetailLoadedState extends ProductState {
@@ -33,9 +34,10 @@ class ProductDetailLoadedState extends ProductState {
 
 class ProductErrorState extends ProductState {
   final String message;
+  final int requestId;
 
-  const ProductErrorState({required this.message});
+  const ProductErrorState({required this.message, this.requestId = 0});
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [message, requestId];
 }

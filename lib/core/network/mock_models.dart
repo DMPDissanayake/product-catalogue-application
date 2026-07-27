@@ -226,7 +226,50 @@ class MockModels {
   }''';
 
   /// Endpoint : product/search
-  static const String productSearchResponse = productListResponse;
+  static String productSearchResponse(String query, {String? category}) {
+    try {
+      final Map<String, dynamic> decoded = jsonDecode(productListResponse);
+      final List<dynamic> allProducts = decoded['output'] ?? [];
+      final q = query.trim().toLowerCase();
+      final cat = category?.trim().toLowerCase();
+
+      final List<dynamic> filtered = allProducts.where((item) {
+        final title = (item['title'] ?? '').toString().toLowerCase();
+        final itemCategory = (item['category'] ?? '').toString().toLowerCase();
+        final description = (item['description'] ?? '')
+            .toString()
+            .toLowerCase();
+
+        final matchesQuery =
+            q.isEmpty ||
+            title.contains(q) ||
+            itemCategory.contains(q) ||
+            description.contains(q);
+        final matchesCategory =
+            cat == null || cat.isEmpty || itemCategory == cat;
+
+        return matchesQuery && matchesCategory;
+      }).toList();
+
+      final response = {
+        "success": true,
+        "message": filtered.isEmpty
+            ? "No products matched your search"
+            : "Product Search Fetched Successfully",
+        "data": filtered,
+        "total_results": filtered.length,
+      };
+
+      return jsonEncode(response);
+    } catch (e) {
+      return jsonEncode({
+        "success": false,
+        "message": "Error searching products: ${e.toString()}",
+        "data": [],
+        "total_results": 0,
+      });
+    }
+  }
 
   /// Endpoint : product/data (Dynamic Method)
   static String productDataResponse(String productId) {

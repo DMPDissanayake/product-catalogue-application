@@ -26,9 +26,13 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         await Future.delayed(const Duration(milliseconds: 300));
       }
 
-      emit(ProductListLoadedState(products: products));
+      emit(
+        ProductListLoadedState(products: products, requestId: event.requestId),
+      );
     } catch (e) {
-      emit(ProductErrorState(message: e.toString()));
+      emit(
+        ProductErrorState(message: e.toString(), requestId: event.requestId),
+      );
     }
   }
 
@@ -39,9 +43,13 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     emit(ProductLoadingState());
     try {
       final products = await productRepository.getProductSearch(event.request);
-      emit(ProductListLoadedState(products: products));
+      emit(
+        ProductListLoadedState(products: products, requestId: event.requestId),
+      );
     } catch (e) {
-      emit(ProductErrorState(message: e.toString()));
+      emit(
+        ProductErrorState(message: e.toString(), requestId: event.requestId),
+      );
     }
   }
 
