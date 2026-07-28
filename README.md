@@ -118,6 +118,13 @@ Favourites are persisted locally using `SharedPreferences` (wrapped by `AppShare
 - No real backend/API was provided for this assignment, so a mock API layer (`MockAPIHelper`) was built to simulate realistic network calls (including delay) and return representative product data.
 - Favourites only need to persist locally on-device; no user accounts or server-side sync were assumed to be in scope.
 - The product data shape (id, name, price, category, image, etc.) was assumed based on typical e-commerce catalogue apps, since no fixed schema was supplied.
+- Only Android/iOS were treated as primary target platforms; desktop/web build folders exist by default from `flutter create` but weren't a focus of testing.
+
+## Challenges
+
+- **No live API to integrate against** — handled by designing an `ApiHelper` abstraction first and building a mock implementation behind it, so the app functions end-to-end and a real API can be swapped in later without touching UI or state-management code.
+- **Keeping favourites in sync across screens** (list, detail, favourites tab) — solved by centralizing favourite state in a single `FavoriteCubit` and persisting via `FavouritesStorageService`, so all screens read from the same source of truth.
+- **Responsive UI across different device sizes** — addressed using `flutter_screenutil` to scale dimensions consistently rather than hardcoding pixel values.
 
 ## Improvements
 
