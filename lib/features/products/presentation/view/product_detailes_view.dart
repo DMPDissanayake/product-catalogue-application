@@ -247,40 +247,75 @@ class _ProductDetailesViewState extends State<ProductDetailesView> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    _productDetail?.description ?? '',
-                                    maxLines: _isDescriptionExpanded ? null : 5,
-                                    overflow: _isDescriptionExpanded
-                                        ? null
-                                        : TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: AppDimensions.kFontSize14,
-                                      height: 1.5,
-                                      letterSpacing:
-                                          AppDimensions.kLetterSpacing14(1),
-                                      color: AppColors.initColors()
-                                          .blackTextColor
-                                          .withOpacity(0.7),
-                                    ),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        _isDescriptionExpanded =
-                                            !_isDescriptionExpanded;
-                                      });
-                                    },
-                                    child: Text(
-                                      _isDescriptionExpanded
-                                          ? 'See less'
-                                          : 'See more',
-                                      style: TextStyle(
+                                  LayoutBuilder(
+                                    builder: (context, constraints) {
+                                      final description =
+                                          _productDetail?.description ?? '';
+                                      final style = TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: AppDimensions.kFontSize14,
+                                        height: 1.5,
+                                        letterSpacing:
+                                            AppDimensions.kLetterSpacing14(1),
                                         color: AppColors.initColors()
-                                            .blackTextColor,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
+                                            .blackTextColor
+                                            .withOpacity(0.7),
+                                      );
+
+                                      final textPainter = TextPainter(
+                                        text: TextSpan(
+                                          text: description,
+                                          style: style,
+                                        ),
+                                        maxLines: 5,
+                                        textDirection: TextDirection.ltr,
+                                      )..layout(maxWidth: constraints.maxWidth);
+
+                                      final isOverflowing =
+                                          textPainter.didExceedMaxLines;
+
+                                      return Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            description,
+                                            maxLines: _isDescriptionExpanded
+                                                ? null
+                                                : 5,
+                                            overflow: _isDescriptionExpanded
+                                                ? null
+                                                : TextOverflow.ellipsis,
+                                            style: style,
+                                          ),
+                                          if (isOverflowing)
+                                            InkWell(
+                                              onTap: () {
+                                                setState(() {
+                                                  _isDescriptionExpanded =
+                                                      !_isDescriptionExpanded;
+                                                });
+                                              },
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                  top: 4.0,
+                                                ),
+                                                child: Text(
+                                                  _isDescriptionExpanded
+                                                      ? 'See less'
+                                                      : 'See more',
+                                                  style: TextStyle(
+                                                    color:
+                                                        AppColors.initColors()
+                                                            .blackTextColor,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                        ],
+                                      );
+                                    },
                                   ),
                                 ],
                               ),

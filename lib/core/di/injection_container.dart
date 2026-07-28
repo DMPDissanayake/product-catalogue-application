@@ -48,5 +48,5 @@ Future<void> setupDependencies() async {
   sl.registerFactory(() => FavoriteCubit(repository: sl()));
 
   // Theme Cubit
-  sl.registerFactory(() => ThemeCubit());
+  sl.registerFactory(() => ThemeCubit(appShared: sl()));
 }

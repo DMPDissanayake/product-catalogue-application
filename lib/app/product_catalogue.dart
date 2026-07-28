@@ -30,6 +30,7 @@ class ProductCatalogue extends StatelessWidget {
         builder: (context, child) {
           return BlocBuilder<ThemeCubit, ThemeType>(
             builder: (context, themeState) {
+              AppColors.setTheme(themeState);
               return MaterialApp(
                 key: ValueKey(themeState),
                 debugShowCheckedModeBanner: false,
