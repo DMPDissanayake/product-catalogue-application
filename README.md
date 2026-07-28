@@ -2,14 +2,24 @@
 
 ## Project Overview
 
-Product Catalogue Application is a Flutter mobile app that lets users browse a catalogue of products, search for items, view detailed product information, and save products to a favourites list. It is built with a clean architecture and uses the BLoC pattern for state management, making the codebase predictable, testable, and easy to extend.
+Product Catalogue Application is a Flutter mobile app that lets users browse a catalogue of products, search for items, view detailed product information, and save products to a favourites list. It is built with a clean, feature-based architecture and uses the BLoC pattern for state management, making the codebase predictable, testable, and easy to extend.
 
 Key features:
-- Products List
+- Products list
 - Search products by keyword / category
 - View detailed information for a single product
 - Add/remove products to a persistent Favourites list (saved locally on the device)
 - Light / dark theme support
+
+## Features
+
+- **Product Listing** — Displays all products fetched from the API layer in a responsive grid, with shimmer placeholders shown while data is loading.
+- **Search** — Users can search products by keyword and/or filter by category; results update through the `ProductBloc`.
+- **Product Details** — Tapping a product opens a detail screen showing full product information, with its own shimmer loading state while the detail data is fetched.
+- **Favourites** — Users can add or remove any product from Favourites via a single tap; the favourites list is persisted locally (SharedPreferences) so it survives app restarts, and stays in sync across the list, detail, and favourites screens through `FavoriteCubit`.
+- **Light / Dark Theme** — Users can switch between light and dark themes at runtime via `ThemeCubit`; the choice is reflected instantly across the whole app.
+- **Smooth Navigation** — Custom page transitions (`page_transition`) are used between screens for a more polished feel than the default Flutter transitions.
+- **Responsive UI** — All screens use `flutter_screenutil` so layouts scale consistently across different device sizes and resolutions.
 
 ## Screenshots
 
@@ -32,7 +42,7 @@ Key features:
 ### Prerequisites
 - [Flutter SDK](https://docs.flutter.dev/get-started/install) 3.10.3 or higher (Dart comes bundled with Flutter)
 - Android Studio / VS Code with Flutter & Dart plugins
-- An Android emulator, or a physical device
+- An Android emulator, iOS simulator, or a physical device
 
 ### 1. Install dependencies
 ```bash
@@ -118,13 +128,18 @@ Favourites are persisted locally using `SharedPreferences` (wrapped by `AppShare
 - No real backend/API was provided for this assignment, so a mock API layer (`MockAPIHelper`) was built to simulate realistic network calls (including delay) and return representative product data.
 - Favourites only need to persist locally on-device; no user accounts or server-side sync were assumed to be in scope.
 - The product data shape (id, name, price, category, image, etc.) was assumed based on typical e-commerce catalogue apps, since no fixed schema was supplied.
-- Only Android/iOS were treated as primary target platforms; desktop/web build folders exist by default from `flutter create` but weren't a focus of testing.
+- Only Android were treated as primary target platforms; desktop/web build folders exist by default from `flutter create` but weren't a focus of testing.
+- App Branding & Launch Experience: Added a native splash screen under the assumption that a initial branding/launch screen is required for a polished, professional user experience while the app initializes resources.
 
 ## Challenges
 
 - **No live API to integrate against** — handled by designing an `ApiHelper` abstraction first and building a mock implementation behind it, so the app functions end-to-end and a real API can be swapped in later without touching UI or state-management code.
-- **Keeping favourites in sync across screens** (list, detail, favourites tab) — solved by centralizing favourite state in a single `FavoriteCubit` and persisting via `FavouritesStorageService`, so all screens read from the same source of truth.
 - **Responsive UI across different device sizes** — addressed using `flutter_screenutil` to scale dimensions consistently rather than hardcoding pixel values.
+- **Smooth UI Transitions & Loading Experience**:
+- *Challenge*: Preventing abrupt UI jumps when loading data and creating an engaging, polished experience when listing products.
+ *Solution*: 
+  - Used `shimmer: ^3.0.0` to display dynamic loading skeletons while fetching data, replacing static progress bars.
+  - Integrated `flutter_staggered_animations: ^1.1.1` to apply staggered list/grid animations when product items appear on screen.
 
 ## Improvements
 
