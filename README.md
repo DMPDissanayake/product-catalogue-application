@@ -2,10 +2,10 @@
 
 ## Project Overview
 
-Product Catalogue Application is a Flutter mobile app that lets users browse a catalogue of products, search for items, view detailed product information, and save products to a favourites list. It is built with a clean, feature-based architecture and uses the BLoC pattern for state management, making the codebase predictable, testable, and easy to extend.
+Product Catalogue Application is a Flutter mobile app that lets users browse a catalogue of products, search for items, view detailed product information, and save products to a favourites list. It is built with a clean architecture and uses the BLoC pattern for state management, making the codebase predictable, testable, and easy to extend.
 
 Key features:
-- Browse products in a responsive grid with shimmer loading states
+- Products List
 - Search products by keyword / category
 - View detailed information for a single product
 - Add/remove products to a persistent Favourites list (saved locally on the device)
@@ -32,7 +32,7 @@ Key features:
 ### Prerequisites
 - [Flutter SDK](https://docs.flutter.dev/get-started/install) 3.10.3 or higher (Dart comes bundled with Flutter)
 - Android Studio / VS Code with Flutter & Dart plugins
-- An Android emulator, iOS simulator, or a physical device
+- An Android emulator, or a physical device
 
 ### 1. Install dependencies
 ```bash
@@ -111,8 +111,6 @@ Networking is abstracted behind an `ApiHelper` interface (`get` / `post`), so th
 - `product/search` – search by query/category
 - `product/data` – single product detail by ID
 
-Because the app depends on the `ApiHelper` interface, swapping the mock implementation for a real HTTP client (e.g. `dio` or `http`) later only requires writing a new implementation of that interface — no changes to the BLoC or UI layers.
-
 Favourites are persisted locally using `SharedPreferences` (wrapped by `AppShared`), storing favourite products as JSON so they survive app restarts.
 
 ## Assumptions
@@ -120,13 +118,6 @@ Favourites are persisted locally using `SharedPreferences` (wrapped by `AppShare
 - No real backend/API was provided for this assignment, so a mock API layer (`MockAPIHelper`) was built to simulate realistic network calls (including delay) and return representative product data.
 - Favourites only need to persist locally on-device; no user accounts or server-side sync were assumed to be in scope.
 - The product data shape (id, name, price, category, image, etc.) was assumed based on typical e-commerce catalogue apps, since no fixed schema was supplied.
-- Only Android/iOS were treated as primary target platforms; desktop/web build folders exist by default from `flutter create` but weren't a focus of testing.
-
-## Challenges
-
-- **No live API to integrate against** — handled by designing an `ApiHelper` abstraction first and building a mock implementation behind it, so the app functions end-to-end and a real API can be swapped in later without touching UI or state-management code.
-- **Keeping favourites in sync across screens** (list, detail, favourites tab) — solved by centralizing favourite state in a single `FavoriteCubit` and persisting via `FavouritesStorageService`, so all screens read from the same source of truth.
-- **Responsive UI across different device sizes** — addressed using `flutter_screenutil` to scale dimensions consistently rather than hardcoding pixel values.
 
 ## Improvements
 
